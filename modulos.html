@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Repaso · 3.º DS «B» (v0.4)</title>
+  
+  <!-- Tipografía futurista/tecnológica inspirada en la guía del Día 2 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+
+  <!-- ========================================== -->
+  <!-- ESTILOS CSS                                -->
+  <!-- ========================================== -->
+  <style>
+    :root {
+      --bg: #070a15;
+      --panel: #0f1630;
+      --panel2: #0b1124;
+      --line: #222c55;
+      --line2: #33407a;
+      --tx: #e8edfb;
+      --mut: #9ba7ce;
+      --cy: #22d3ee;
+      --mg: #f046d2;
+      --am: #ffb224;
+      --gr: #34f5a0;
+      --fd: 'Orbitron', system-ui, sans-serif;
+      --fb: 'Exo 2', system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--fb);
+      background: var(--bg);
+      color: var(--tx);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .wrap { max-width: 1000px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      font-family: var(--fd);
+      font-size: clamp(24px, 4vw, 36px);
+      color: var(--cy);
+      margin-bottom: 8px;
+    }
+
+    p.sub { color: var(--mut); }
+
+    /* Grilla de Tarjetas de Módulos */
+    .modulos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card-mod {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--cy);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card-mod:hover {
+      transform: translateY(-4px);
+      border-color: var(--cy);
+    }
+
+    .card-mod h3 {
+      font-family: var(--fd);
+      font-size: 18px;
+      color: var(--tx);
+      margin-bottom: 6px;
+    }
+
+    .card-mod .docente {
+      font-size: 13px;
+      color: var(--mg);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .card-mod p {
+      font-size: 14px;
+      color: var(--mut);
+      margin-bottom: 16px;
+    }
+
+    .btn-ficha {
+      background: linear-gradient(135deg, #0891b2, var(--cy));
+      color: #04121a;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-family: var(--fb);
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .btn-ficha:hover { filter: brightness(1.1); }
+
+    /* Modal dialog */
+    dialog {
+      margin: auto;
+      background: var(--panel);
+      color: var(--tx);
+      border: 1px solid var(--line2);
+      border-radius: 16px;
+      max-width: 600px;
+      width: 90%;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+
+    dialog::backdrop {
+      background: rgba(7, 10, 21, 0.8);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h2 {
+      font-family: var(--fd);
+      font-size: 20px;
+      color: var(--cy);
+    }
+
+    .btn-close {
+      background: transparent;
+      border: 1px solid var(--line2);
+      color: var(--mut);
+      font-size: 18px;
+      border-radius: 6px;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+    }
+
+    .btn-close:hover { color: var(--mg); border-color: var(--mg); }
+
+    .sec-ficha { margin-bottom: 14px; }
+    .sec-ficha h4 { font-size: 14px; color: var(--am); margin-bottom: 4px; text-transform: uppercase; }
+    .sec-ficha ul { padding-left: 20px; font-size: 14px; color: var(--mut); }
+    .sec-ficha a { color: var(--cy); text-decoration: none; }
+    .sec-ficha a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <header>
+      <h1>HUB de Repaso · Día 2 (v0.4)</h1>
+      <p class="sub">3.º Bachillerato Técnico Vocacional en Desarrollo de Software «B»</p>
+    </header>
+
+    <!-- Contenedor donde JS insertará los módulos dinámicamente -->
+    <main class="modulos-grid" id="modulosGrid"></main>
+  </div>
+
+  <!-- Modal/Ficha del Módulo -->
+  <dialog id="modalFicha">
+    <div class="modal-header">
+      <h2 id="modalTitulo">Título Módulo</h2>
+      <button class="btn-close" id="btnCerrarModal">✕</button>
+    </div>
+    <div id="modalCuerpo"></div>
+  </dialog>
+
+  <!-- ========================================== -->
+  <!-- CÓDIGO JAVASCRIPT                          -->
+  <!-- ========================================== -->
+  <script>
+    // 1. Estructura de Datos (Simulando data/modulos.js)
+    const modulos = [
+      {
+        id: "m1",
+        nombre: "Desarrollo de Aplicaciones Web",
+        docente: "Prof. Javier Mineros",
+        resumen: "Construcción de portales dinámicos utilizando HTML5, CSS3, JavaScript y control de versiones con Git.",
+        instrumentos: ["Guía práctica Día 2", "Rúbrica de evaluación del portal"],
+        programas: ["Visual Studio Code", "Google Chrome DevTools"],
+        herramientas: ["HTML5 / CSS3 / JavaScript", "Git & GitHub"],
+        recursos: [
+          { nombre: "MDN Web Docs (JS)", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript" }
+        ],
+        evidencias: [
+          { nombre: "Repositorio en GitHub Pages", url: "https://github.com" }
+        ]
+      },
+      {
+        id: "m2",
+        nombre: "Bases de Datos Relacionales",
+        docente: "Prof. Arcides Canales",
+        resumen: "Diseño, normalización y consultas estructuradas en sistemas gestores de bases de datos relacionales.",
+        instrumentos: ["Guía de SQL DDL/DML", "Examen práctico de consultas"],
+        programas: ["MySQL Workbench", "XAMPP"],
+        herramientas: ["SQL", "MySQL"],
+        recursos: [
+          { nombre: "Documentación oficial de MySQL", url: "https://dev.mysql.com/doc/" }
+        ],
+        evidencias: [
+          { nombre: "Diagrama Entidad-Relación", url: "https://github.com" }
+        ]
+      }
+    ];
+
+    // 2. Referencias a elementos del DOM
+    const grid = document.getElementById('modulosGrid');
+    const modal = document.getElementById('modalFicha');
+    const modalTitulo = document.getElementById('modalTitulo');
+    const modalCuerpo = document.getElementById('modalCuerpo');
+    const btnCerrar = document.getElementById('btnCerrarModal');
+
+    // 3. Función para pintar los módulos en la página
+    function renderizarModulos() {
+      grid.innerHTML = '';
+      modulos.forEach(mod => {
+        const card = document.createElement('article');
+        card.className = 'card-mod';
+        card.innerHTML = `
+          <div>
+            <h3>${mod.nombre}</h3>
+            <div class="docente">${mod.docente}</div>
+            <p>${mod.resumen}</p>
+          </div>
+          <button class="btn-ficha" onclick="abrirFicha('${mod.id}')">Ver Ficha Completa</button>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // 4. Abrir la ventana modal con la anatomía de la ficha
+    function abrirFicha(id) {
+      const mod = modulos.find(item => item.id === id);
+      if (!mod) return;
+
+      modalTitulo.textContent = mod.nombre;
+      modalCuerpo.innerHTML = `
+        <p style="color:var(--mut); margin-bottom:16px;"><strong>Docente:</strong> ${mod.docente}</p>
+        
+        <div class="sec-ficha">
+          <h4>Instrumentos</h4>
+          <ul>${mod.instrumentos.map(i => `<li>${i}</li>`).join('')}</ul>
+        </div>
+        
+        <div class="sec-ficha">
+          <h4>Programas</h4>
+          <ul>${mod.programas.map(p => `<li>${p}</li>`).join('')}</ul>
+        </div>
+        
+        <div class="sec-ficha">
+          <h4>Herramientas</h4>
+          <ul>${mod.herramientas.map(h => `<li>${h}</li>`).join('')}</ul>
+        </div>
+        
+        <div class="sec-ficha">
+          <h4>Recursos</h4>
+          <ul>${mod.recursos.map(r => `<li><a href="${r.url}" target="_blank" rel="noopener">${r.nombre}</a></li>`).join('')}</ul>
+        </div>
+
+        <div class="sec-ficha">
+          <h4>Evidencias</h4>
+          <ul>${mod.evidencias.map(e => `<li><a href="${e.url}" target="_blank" rel="noopener">${e.nombre}</a></li>`).join('')}</ul>
+        </div>
+      `;
+
+      modal.showModal();
+    }
+
+    // 5. Evento para cerrar la ventana modal
+    btnCerrar.addEventListener('click', () => modal.close());
+
+    // Cierra modal al hacer clic afuera
+    modal.addEventListener('click', (e) => {
+      const rect = modal.getBoundingClientRect();
+      if (
+        e.clientX < rect.left || e.clientX > rect.right ||
+        e.clientY < rect.top || e.clientY > rect.bottom
+      ) {
+        modal.close();
+      }
+    });
+
+    // Inicializar renderizado
+    document.addEventListener('DOMContentLoaded', renderizarModulos);
+  </script>
+</body>
+</html>
