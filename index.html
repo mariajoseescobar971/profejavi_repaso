@@ -5,14 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal de Repaso · 3.º DS «B» (v0.4)</title>
   
-  <!-- Tipografía futurista/tecnológica inspirada en la guía del Día 2 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
 
-  <!-- ========================================== -->
-  <!-- ESTILOS CSS                                -->
-  <!-- ========================================== -->
   <style>
     :root {
       --bg: #070a15;
@@ -39,7 +35,7 @@
       padding: 20px;
     }
 
-    .wrap { max-width: 1000px; margin: 0 auto; }
+    .wrap { max-width: 1080px; margin: 0 auto; }
 
     header {
       text-align: center;
@@ -60,7 +56,7 @@
     /* Grilla de Tarjetas de Módulos */
     .modulos-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 20px;
     }
 
@@ -76,14 +72,21 @@
       transition: transform 0.2s ease, border-color 0.2s ease;
     }
 
+    .card-mod.arcides {
+      border-top-color: var(--mg);
+    }
+
     .card-mod:hover {
       transform: translateY(-4px);
       border-color: var(--cy);
     }
+    .card-mod.arcides:hover {
+      border-color: var(--mg);
+    }
 
     .card-mod h3 {
       font-family: var(--fd);
-      font-size: 18px;
+      font-size: 16px;
       color: var(--tx);
       margin-bottom: 6px;
     }
@@ -93,6 +96,9 @@
       color: var(--mg);
       font-weight: 600;
       margin-bottom: 12px;
+    }
+    .card-mod.javier .docente {
+      color: var(--cy);
     }
 
     .card-mod p {
@@ -113,6 +119,11 @@
       width: 100%;
     }
 
+    .card-mod.arcides .btn-ficha {
+      background: linear-gradient(135deg, #a21caf, var(--mg));
+      color: #fff;
+    }
+
     .btn-ficha:hover { filter: brightness(1.1); }
 
     /* Modal dialog */
@@ -122,14 +133,14 @@
       color: var(--tx);
       border: 1px solid var(--line2);
       border-radius: 16px;
-      max-width: 600px;
+      max-width: 650px;
       width: 90%;
       padding: 24px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     }
 
     dialog::backdrop {
-      background: rgba(7, 10, 21, 0.8);
+      background: rgba(7, 10, 21, 0.85);
       backdrop-filter: blur(4px);
     }
 
@@ -144,7 +155,7 @@
 
     .modal-header h2 {
       font-family: var(--fd);
-      font-size: 20px;
+      font-size: 18px;
       color: var(--cy);
     }
 
@@ -162,7 +173,7 @@
     .btn-close:hover { color: var(--mg); border-color: var(--mg); }
 
     .sec-ficha { margin-bottom: 14px; }
-    .sec-ficha h4 { font-size: 14px; color: var(--am); margin-bottom: 4px; text-transform: uppercase; }
+    .sec-ficha h4 { font-size: 13px; color: var(--am); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
     .sec-ficha ul { padding-left: 20px; font-size: 14px; color: var(--mut); }
     .sec-ficha a { color: var(--cy); text-decoration: none; }
     .sec-ficha a:hover { text-decoration: underline; }
@@ -189,57 +200,172 @@
     <div id="modalCuerpo"></div>
   </dialog>
 
-  <!-- ========================================== -->
-  <!-- CÓDIGO JAVASCRIPT                          -->
-  <!-- ========================================== -->
   <script>
-    // 1. Estructura de Datos (Simulando data/modulos.js)
+    // Estructura de Datos con los Módulos del Prof. Javier Mineros y Prof. Arcides Canales
     const modulos = [
+      // --- MÓDULOS DEL PROF. JAVIER MINEROS ---
       {
-        id: "m1",
-        nombre: "Desarrollo de Aplicaciones Web",
+        id: "m30",
+        nombre: "Módulo 3.0: Orientación al Proceso Educativo del Tercer Año",
         docente: "Prof. Javier Mineros",
-        resumen: "Construcción de portales dinámicos utilizando HTML5, CSS3, JavaScript y control de versiones con Git.",
-        instrumentos: ["Guía práctica Día 2", "Rúbrica de evaluación del portal"],
-        programas: ["Visual Studio Code", "Google Chrome DevTools"],
-        herramientas: ["HTML5 / CSS3 / JavaScript", "Git & GitHub"],
+        tipo: "javier",
+        resumen: "Organización de equipos de trabajo, creación de portafolios y orientación general para el tercer año.",
+        instrumentos: ["Portafolio del módulo 3.0", "Espacio para compartir QRs", "Generalidades del módulo"],
+        programas: ["Google Classroom", "Google Drive"],
+        herramientas: ["Portafolio Digital", "QR Generators"],
         recursos: [
-          { nombre: "MDN Web Docs (JS)", url: "https://developer.mozilla.org/es/docs/Learn/JavaScript" }
+          { nombre: "Generalidades del Módulo 3.0", url: "https://classroom.google.com" }
         ],
         evidencias: [
-          { nombre: "Repositorio en GitHub Pages", url: "https://github.com" }
+          { nombre: "Entrega de Portafolio e Integración de Equipos", url: "https://github.com" }
         ]
       },
       {
-        id: "m2",
-        nombre: "Bases de Datos Relacionales",
-        docente: "Prof. Arcides Canales",
-        resumen: "Diseño, normalización y consultas estructuradas en sistemas gestores de bases de datos relacionales.",
-        instrumentos: ["Guía de SQL DDL/DML", "Examen práctico de consultas"],
-        programas: ["MySQL Workbench", "XAMPP"],
-        herramientas: ["SQL", "MySQL"],
+        id: "m32",
+        nombre: "Módulo 3.2: Mantenimiento y Aseguramiento de Sistemas Informáticos",
+        docente: "Prof. Javier Mineros",
+        tipo: "javier",
+        resumen: "Monitoreo, registro de mantenimiento, creación de tiquetes, plantillas SLA, modelado UML y planes de contingencia.",
+        instrumentos: ["Plantilla SLA", "Registro de tiquetes y monitoreo", "Planes de contingencia y testeo"],
+        programas: ["Visual Studio Code", "StarUML / Draw.io", "Power BI"],
+        herramientas: ["UML", "Dashboards de Monitoreo", "Testing de Software"],
         recursos: [
-          { nombre: "Documentación oficial de MySQL", url: "https://dev.mysql.com/doc/" }
+          { nombre: "Modelado de Software UML", url: "https://developer.mozilla.org/es/" },
+          { nombre: "Plantilla de Acuerdos SLA", url: "https://docs.github.com" }
         ],
         evidencias: [
-          { nombre: "Diagrama Entidad-Relación", url: "https://github.com" }
+          { nombre: "Proyecto Final de Mantenimiento y Dashboard", url: "https://github.com" }
+        ]
+      },
+      {
+        id: "m33",
+        nombre: "Módulo 3.3: Administración de Bases de Datos",
+        docente: "Prof. Javier Mineros",
+        tipo: "javier",
+        resumen: "Administración de BD, ejecución de scripts, actividades remediales, analítica y reportes con Power BI.",
+        instrumentos: ["Guías de ejecución (Semanas 9 a 11)", "Actividades remediales", "Rúbrica de Power BI"],
+        programas: ["Power BI Desktop", "MySQL Workbench", "SQL Server"],
+        herramientas: ["SQL / DML / DDL", "DAX", "Power BI Dashboards"],
+        recursos: [
+          { nombre: "Guía de Instalación de Power BI", url: "https://powerbi.microsoft.com/" },
+          { nombre: "Documentación de MySQL", url: "https://dev.mysql.com/doc/" }
+        ],
+        evidencias: [
+          { nombre: "Dashboard Final y Documentación", url: "https://github.com" }
+        ]
+      },
+      {
+        id: "m34",
+        nombre: "Módulo 3.4: Elaboración de Documentación de Sistemas Informáticos",
+        docente: "Prof. Javier Mineros",
+        tipo: "javier",
+        resumen: "Documentación técnica por fases del ciclo de vida del software, arquitectura del sistema y desarrollo con Python.",
+        instrumentos: ["Fases de documentación (Fase 1 a 7)", "Guía individual de Python"],
+        programas: ["Python 3", "VS Code", "PyCharm"],
+        herramientas: ["Python", "Arquitectura de Software", "UML"],
+        recursos: [
+          { nombre: "Documentación Oficial de Python", url: "https://docs.python.org/es/3/" }
+        ],
+        evidencias: [
+          { nombre: "Aplicaciones con Python y Documentación Final", url: "https://github.com" }
+        ]
+      },
+      {
+        id: "m38",
+        nombre: "Módulo 3.8: Proyecto Innovador de Desarrollo de Software",
+        docente: "Prof. Javier Mineros",
+        tipo: "javier",
+        resumen: "Desarrollo integral de un proyecto informático innovador, elaboración del manual de sistema y exposiciones finales.",
+        instrumentos: ["Avances de proyecto (10% y 15%)", "Manual de sistema", "Rúbrica de exposiciones"],
+        programas: ["Visual Studio Code", "Git / GitHub"],
+        herramientas: ["HTML/CSS/JS", "Python / C#", "GitHub Pages"],
+        recursos: [
+          { nombre: "Documentación de GitHub Issues", url: "https://docs.github.com/es" }
+        ],
+        evidencias: [
+          { nombre: "Entrega Final y Exposición del Proyecto", url: "https://github.com" }
+        ]
+      },
+
+      // --- MÓDULOS DEL PROF. ARCIDES CANALES ---
+      {
+        id: "m40",
+        nombre: "Módulo 4: Puesta en Marcha de la Empresa en Asociatividad Cooperativa",
+        docente: "Prof. Arcides Canales",
+        tipo: "arcides",
+        resumen: "Proyectos integradores de tecnología aplicada a empresas cooperativas con Arduino, ASPX, WinForms, .NET MAUI y PrestaShop.",
+        instrumentos: ["Proyecto Agustine-Arduino (25%)", "Proyecto Winform y ASPX (25%)", "Proyecto Final .NET MAUI (25%)", "PrestaShop Individual (25%)"],
+        programas: ["Visual Studio", "Arduino IDE", "PrestaShop"],
+        herramientas: ["C#", ".NET MAUI", "ASP.NET / WinForms", "Arduino C++"],
+        recursos: [
+          { nombre: "Microsoft Learn (.NET MAUI)", url: "https://learn.microsoft.com/es-es/dotnet/maui/" },
+          { nombre: "Documentación de Arduino", url: "https://www.arduino.cc/" }
+        ],
+        evidencias: [
+          { nombre: "Tienda PrestaShop & App Móvil .NET MAUI", url: "https://github.com" }
+        ]
+      },
+      {
+        id: "m3eng",
+        nombre: "Módulo 3: Conversación de Inglés sobre Mantenimiento de Sistemas",
+        docente: "Prof. Arcides Canales",
+        tipo: "arcides",
+        resumen: "Comunicación técnica en inglés para soporte de sistemas, metodología agil SCRUM y operaciones CRUD asistidas por IA.",
+        instrumentos: ["Práctica 10: SCRUM", "Práctica 11: Base de datos CRUD-IA"],
+        programas: ["VS Code", "Herramientas de IA Generativa"],
+        herramientas: ["SCRUM", "CRUD Operations", "Technical English"],
+        recursos: [
+          { nombre: "Guía de Metodología SCRUM", url: "https://www.scrum.org/" }
+        ],
+        evidencias: [
+          { nombre: "Práctica CRUD asistida por IA", url: "https://github.com" }
+        ]
+      },
+      {
+        id: "m2mov",
+        nombre: "Módulo 2: Desarrollo de Componentes para Dispositivos Móviles",
+        docente: "Prof. Arcides Canales",
+        tipo: "arcides",
+        resumen: "Diseño y construcción de aplicaciones móviles multiplataforma mediante el framework .NET MAUI.",
+        instrumentos: ["Prácticas 06 a 09 (.NET MAUI)", "Autoevaluación Práctica 9", "Guía de Nivelación/Recuperación"],
+        programas: ["Visual Studio 2022", "Emuladores Android / iOS"],
+        herramientas: [".NET MAUI", "XAML", "C# Mobile"],
+        recursos: [
+          { nombre: "Diseño UI en .NET MAUI", url: "https://learn.microsoft.com/es-es/dotnet/maui/user-interface/" }
+        ],
+        evidencias: [
+          { nombre: "App Móvil Multiplataforma", url: "https://github.com" }
+        ]
+      },
+      {
+        id: "m31",
+        nombre: "BTVDS 3.1: Desarrollo de Aplicaciones de Software para Solución de Problemas",
+        docente: "Prof. Arcides Canales",
+        tipo: "arcides",
+        resumen: "Fundamentos de Programación Orientada a Objetos (POO), herencia, polimorfismo, acceso a datos y Razor Pages con Code First.",
+        instrumentos: ["Prácticas 1 y 2 (POO Herencia/Polimorfismo)", "Práctica 3 (Acceso a Datos)", "Prácticas 4 y 5 (Code First - ASP Razor)"],
+        programas: ["Visual Studio", "SQL Server Management Studio"],
+        herramientas: ["POO (C#)", "Entity Framework Code First", "ASP.NET Razor Pages"],
+        recursos: [
+          { nombre: "Aprende C# y POO en Microsoft Learn", url: "https://learn.microsoft.com/es-es/dotnet/csharp/" }
+        ],
+        evidencias: [
+          { nombre: "Sistema Web con ASP.NET Razor y Code First", url: "https://github.com" }
         ]
       }
     ];
 
-    // 2. Referencias a elementos del DOM
     const grid = document.getElementById('modulosGrid');
     const modal = document.getElementById('modalFicha');
     const modalTitulo = document.getElementById('modalTitulo');
     const modalCuerpo = document.getElementById('modalCuerpo');
     const btnCerrar = document.getElementById('btnCerrarModal');
 
-    // 3. Función para pintar los módulos en la página
     function renderizarModulos() {
       grid.innerHTML = '';
       modulos.forEach(mod => {
         const card = document.createElement('article');
-        card.className = 'card-mod';
+        card.className = `card-mod ${mod.tipo}`;
         card.innerHTML = `
           <div>
             <h3>${mod.nombre}</h3>
@@ -252,7 +378,6 @@
       });
     }
 
-    // 4. Abrir la ventana modal con la anatomía de la ficha
     function abrirFicha(id) {
       const mod = modulos.find(item => item.id === id);
       if (!mod) return;
@@ -290,10 +415,8 @@
       modal.showModal();
     }
 
-    // 5. Evento para cerrar la ventana modal
     btnCerrar.addEventListener('click', () => modal.close());
 
-    // Cierra modal al hacer clic afuera
     modal.addEventListener('click', (e) => {
       const rect = modal.getBoundingClientRect();
       if (
@@ -304,7 +427,6 @@
       }
     });
 
-    // Inicializar renderizado
     document.addEventListener('DOMContentLoaded', renderizarModulos);
   </script>
 </body>
